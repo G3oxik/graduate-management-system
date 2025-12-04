@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <title>信息学院毕业生就业去向管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #17a2b8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .table th {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .menu-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .feature-card {
+            cursor: pointer;
+            height: 100%;
+        }
+        
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-custom {
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>
+                信息学院毕业生就业去向管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="home-link">
+                            <i class="fas fa-home me-1"></i> 首页
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="data-link">
+                            <i class="fas fa-database me-1"></i> 数据管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="stats-link">
+                            <i class="fas fa-chart-bar me-1"></i> 统计分析
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container mt-4">
+        <!-- 首页/主菜单 -->
+        <div id="home-section">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3><i class="fas fa-university me-2"></i>欢迎使用信息学院毕业生就业去向管理系统</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="lead text-center">本系统提供毕业生就业数据的全面管理功能，包括数据导入、查询、修改、删除和统计分析。</p>
+                            
+                            <div class="alert alert-info alert-custom">
+                                <i class="fas fa-info-circle me-2"></i>
+                                当前系统共有 <span id="total-count" class="fw-bold">0</span> 条毕业生记录
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- 批量导入 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="import">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-file-import"></i>
+                            </div>
+                            <h5 class="card-title">批量导入就业数据</h5>
+                            <p class="card-text">从文件批量导入毕业生就业数据</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 浏览数据 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="browse">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <h5 class="card-title">浏览就业数据</h5>
+                            <p class="card-text">查看所有毕业生就业信息</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查询数据 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="search">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h5 class="card-title">查询就业数据</h5>
+                            <p class="card-text">按学号或姓名查询毕业生信息</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 增录数据 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="add">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h5 class="card-title">增录就业数据</h5>
+                            <p class="card-text">添加新的毕业生就业信息</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 删除数据 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="delete">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-user-minus"></i>
+                            </div>
+                            <h5 class="card-title">删除就业数据</h5>
+                            <p class="card-text">删除毕业生就业信息</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 修改数据 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="modify">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h5 class="card-title">修改就业数据</h5>
+                            <p class="card-text">修改毕业生就业信息</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 统计数据 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="statistics">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <h5 class="card-title">统计就业数据</h5>
+                            <p class="card-text">就业率统计与分析</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 退出系统 -->
+                <div class="col-md-3 mb-4">
+                    <div class="card feature-card" data-action="exit">
+                        <div class="card-body text-center">
+                            <div class="menu-icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <h5 class="card-title">退出系统</h5>
+                            <p class="card-text">安全退出管理系统</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 数据浏览部分 -->
+        <div id="data-section" class="hidden">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-table me-2"></i>毕业生就业信息表</h4>
+                    <button class="btn btn-sm btn-outline-light" id="back-to-home">
+                        <i class="fas fa-arrow-left me-1"></i> 返回首页
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="graduates-table">
+                            <thead>
+                                <tr>
+                                    <th>学号</th>
+                                    <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>出生日期</th>
+                                    <th>入学年份</th>
+                                    <th>毕业年份</th>
+                                    <th>毕业学历</th>
+                                    <th>毕业专业</th>
+                                    <th>就业方向</th>
+                                    <th>就业单位</th>
+                                    <th>从事专业</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="graduates-table-body">
+                                <!-- 数据将通过JavaScript动态填充 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <div>总计：<span id="record-count">0</span> 条记录</div>
+                        <button class="btn btn-primary" id="add-new-btn">
+                            <i class="fas fa-plus me-1"></i> 新增毕业生
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 统计分析部分 -->
+        <div id="stats-section" class="hidden">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-chart-bar me-2"></i>就业数据统计分析</h4>
+                    <button class="btn btn-sm btn-outline-light" id="back-to-home-stats">
+                        <i class="fas fa-arrow-left me-1"></i> 返回首页
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-graduates">0</div>
+                                <div class="stat-label">总毕业生数</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-value" id="employment-rate">0%</div>
+                                <div class="stat-label">整体就业率</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-value" id="postgrad-rate">0%</div>
+                                <div class="stat-label">深造率</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-value" id="work-rate">0%</div>
+                                <div class="stat-label">直接工作率</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>按专业统计就业率</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="major-chart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>就业方向分布</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="direction-chart" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>详细统计选项</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card feature-card" data-stat="year">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-calendar-alt menu-icon"></i>
+                                                    <h6>统计某一年份就业率</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card feature-card" data-stat="year-edu">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-user-graduate menu-icon"></i>
+                                                    <h6>统计某一年份不同学历就业率</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card feature-card" data-stat="year-major">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-book menu-icon"></i>
+                                                    <h6>统计某一年份不同专业就业率</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card feature-card" data-stat="year-direction">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-directions menu-icon"></i>
+                                                    <h6>统计某一年份不同就业方向</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card feature-card" data-stat="year-job-major">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-briefcase menu-icon"></i>
+                                                    <h6>统计某一年份从事不同专业</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框区域 -->
+    
+    <!-- 批量导入模态框 -->
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">批量导入就业数据</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        请上传包含毕业生数据的文本文件，格式应与系统要求一致。
+                    </div>
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">选择文件</label>
+                        <input class="form-control" type="file" id="fileInput" accept=".txt">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="overwriteData">
+                        <label class="form-check-label" for="overwriteData">
+                            覆盖现有数据（不勾选将追加数据）
+                        </label>
+                    </div>
+                    <div id="importPreview" class="hidden">
+                        <h6>数据预览（前5条记录）</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>学号</th>
+                                        <th>姓名</th>
+                                        <th>性别</th>
+                                        <th>毕业年份</th>
+                                        <th>专业</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmImport">导入数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 查询模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">查询毕业生信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">查询方式</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="searchType" id="searchById" value="id" checked>
+                                <label class="form-check-label" for="searchById">按学号查询</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="searchType" id="searchByName" value="name">
+                                <label class="form-check-label" for="searchByName">按姓名查询</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="searchValue" class="form-label">查询值</label>
+                        <input type="text" class="form-control" id="searchValue" placeholder="请输入学号或姓名">
+                    </div>
+                    <div id="searchResults" class="hidden mt-3">
+                        <h6>查询结果</h6>
+                        <div id="resultContent">
+                            <!-- 查询结果将动态显示在这里 -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="performSearch">查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加/编辑毕业生模态框 -->
+    <div class="modal fade" id="graduateModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="graduateModalTitle">添加毕业生信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="graduateForm">
+                        <div class="form-section">
+                            <h6>基本信息</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="studentId" class="form-label">学号</label>
+                                    <input type="text" class="form-control" id="studentId" required>
+                                    <div class="form-text">请输入9位数字学号</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">姓名</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">性别</label>
+                                    <div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="M" checked>
+                                            <label class="form-check-label" for="genderMale">男</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="F">
+                                            <label class="form-check-label" for="genderFemale">女</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <label for="birthDate" class="form-label">出生日期</label>
+                                    <input type="date" class="form-control" id="birthDate" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="enrollmentYear" class="form-label">入学年份</label>
+                                    <input type="number" class="form-control" id="enrollmentYear" min="2000" max="2030" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="graduationYear" class="form-label">毕业年份</label>
+                                    <input type="number" class="form-control" id="graduationYear" min="2000" max="2030" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h6>学业信息</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="educationLevel" class="form-label">毕业学历</label>
+                                    <select class="form-select" id="educationLevel" required>
+                                        <option value="">请选择</option>
+                                        <option value="UNDERGRADUATE">本科生</option>
+                                        <option value="MASTER">硕士研究生</option>
+                                        <option value="DOCTOR">博士研究生</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="major" class="form-label">毕业专业</label>
+                                    <select class="form-select" id="major" required>
+                                        <option value="">请选择</option>
+                                        <option value="NETWORK_ENGINEERING">网络工程</option>
+                                        <option value="COMPUTER_SCIENCE">计算机科学与技术</option>
+                                        <option value="DIGITAL_MEDIA">数字媒体技术</option>
+                                        <option value="INTERNET_OF_THINGS">物联网工程</option>
+                                        <option value="DATA_SCIENCE">数据科学与大数据技术</option>
+                                        <option value="INFORMATION_MANAGEMENT">信息管理与信息系统</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h6>就业信息</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="careerDirection" class="form-label">就业方向</label>
+                                    <select class="form-select" id="careerDirection" required>
+                                        <option value="">请选择</option>
+                                        <option value="DIRECT_WORK">直接工作</option>
+                                        <option value="CIVIL_SERVANT">公务员</option>
+                                        <option value="DOMESTIC_MASTER">国内读硕</option>
+                                        <option value="OVERSEAS_MASTER">出国读硕</option>
+                                        <option value="DOMESTIC_DOCTOR">国内读博</option>
+                                        <option value="OVERSEAS_DOCTOR">国外读博</option>
+                                        <option value="RETAKE_EXAM">二战</option>
+                                        <option value="SECOND_DEGREE">二学位</option>
+                                        <option value="UNEMPLOYED">未就业</option>
+                                        <option value="OTHER">其他</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="employer" class="form-label">就业/升学单位</label>
+                                    <input type="text" class="form-control" id="employer">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="jobMajor" class="form-label">从事专业</label>
+                                <input type="text" class="form-control" id="jobMajor">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="saveGraduate">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 删除确认模态框 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认删除</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要删除该毕业生信息吗？此操作不可恢复。</p>
+                    <div id="deleteGraduateInfo">
+                        <!-- 将要删除的毕业生信息将动态显示在这里 -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">确认删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计详情模态框 -->
+    <div class="modal fade" id="statDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statDetailTitle">统计详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="statDetailContent">
+                        <!-- 统计详情内容将动态显示在这里 -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认模态框 -->
+    <div class="modal fade" id="exitModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认退出</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要退出系统吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmExit">确认退出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container text-center">
+            <p>&copy; <span id="current-year">2023</span> 信息学院（人工智能学院）毕业生就业去向管理系统</p>
+            <p class="mb-0">技术支持：信息学院计算机系</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 数据模型和枚举定义
+        const EducationLevel = {
+            UNDERGRADUATE: "本科生",
+            MASTER: "硕士研究生",
+            DOCTOR: "博士研究生"
+        };
+
+        const Major = {
+            NETWORK_ENGINEERING: "网络工程",
+            COMPUTER_SCIENCE: "计算机科学与技术",
+            DIGITAL_MEDIA: "数字媒体技术",
+            INTERNET_OF_THINGS: "物联网工程",
+            DATA_SCIENCE: "数据科学与大数据技术",
+            INFORMATION_MANAGEMENT: "信息管理与信息系统"
+        };
+
+        const CareerDirection = {
+            DIRECT_WORK: "直接工作",
+            CIVIL_SERVANT: "公务员",
+            DOMESTIC_MASTER: "国内读硕",
+            OVERSEAS_MASTER: "出国读硕",
+            DOMESTIC_DOCTOR: "国内读博",
+            OVERSEAS_DOCTOR: "国外读博",
+            RETAKE_EXAM: "二战",
+            SECOND_DEGREE: "二学位",
+            UNEMPLOYED: "未就业",
+            OTHER: "其他"
+        };
+
+        // 毕业生类
+        class Graduate {
+            constructor(studentId, name, gender, birthDate, enrollmentYear, graduationYear, 
+                        educationLevel, major, careerDirection, employer, jobMajor) {
+                this.studentId = studentId;
+                this.name = name;
+                this.gender = gender;
+                this.birthDate = birthDate;
+                this.enrollmentYear = enrollmentYear;
+                this.graduationYear = graduationYear;
+                this.educationLevel = educationLevel;
+                this.major = major;
+                this.careerDirection = careerDirection;
+                this.employer = employer;
+                this.jobMajor = jobMajor;
+            }
+        }
+
+        // 毕业生管理系统
+        class GraduateManagementSystem {
+            constructor() {
+                this.graduates = this.loadData();
+                this.currentEditId = null;
+                this.currentDeleteId = null;
+                this.init();
+            }
+
+            // 初始化系统
+            init() {
+                this.bindEvents();
+                this.updateHomeStats();
+                this.renderGraduatesTable();
+                this.updateCharts();
+                this.showSection('home-section');
+                // 更新页脚年份
+                document.getElementById('current-year').textContent = new Date().getFullYear();
+            }
+
+            // 绑定事件
+            bindEvents() {
+                // 导航链接
+                document.getElementById('home-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showSection('home-section');
+                });
+                document.getElementById('data-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showSection('data-section');
+                    this.renderGraduatesTable();
+                });
+                document.getElementById('stats-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showSection('stats-section');
+                    this.updateCharts();
+                });
+
+                // 返回首页按钮
+                document.getElementById('back-to-home').addEventListener('click', () => {
+                    this.showSection('home-section');
+                });
+                document.getElementById('back-to-home-stats').addEventListener('click', () => {
+                    this.showSection('home-section');
+                });
+
+                // 功能卡片点击事件
+                document.querySelectorAll('.feature-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const action = card.getAttribute('data-action');
+                        this.handleFeatureAction(action);
+                    });
+                });
+
+                // 统计卡片点击事件
+                document.querySelectorAll('[data-stat]').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const statType = card.getAttribute('data-stat');
+                        this.showStatDetail(statType);
+                    });
+                });
+
+                // 新增毕业生按钮
+                document.getElementById('add-new-btn').addEventListener('click', () => {
+                    this.showGraduateModal();
+                });
+
+                // 保存毕业生信息
+                document.getElementById('saveGraduate').addEventListener('click', () => {
+                    this.saveGraduate();
+                });
+
+                // 查询功能
+                document.getElementById('performSearch').addEventListener('click', () => {
+                    this.performSearch();
+                });
+
+                // 导入功能
+                document.getElementById('fileInput').addEventListener('change', (e) => {
+                    this.previewImportData(e.target.files[0]);
+                });
+                document.getElementById('confirmImport').addEventListener('click', () => {
+                    this.importData();
+                });
+
+                // 删除确认
+                document.getElementById('confirmDelete').addEventListener('click', () => {
+                    this.confirmDelete();
+                });
+
+                // 退出确认
+                document.getElementById('confirmExit').addEventListener('click', () => {
+                    this.confirmExit();
+                });
+            }
+
+            // 显示指定部分
+            showSection(sectionId) {
+                document.querySelectorAll('#home-section, #data-section, #stats-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                document.getElementById(sectionId).classList.remove('hidden');
+            }
+
+            // 处理功能卡片点击
+            handleFeatureAction(action) {
+                switch (action) {
+                    case 'import':
+                        this.showImportModal();
+                        break;
+                    case 'browse':
+                        this.showSection('data-section');
+                        this.renderGraduatesTable();
+                        break;
+                    case 'search':
+                        this.showSearchModal();
+                        break;
+                    case 'add':
+                        this.showGraduateModal();
+                        break;
+                    case 'delete':
+                        this.showDeleteOptions();
+                        break;
+                    case 'modify':
+                        this.showModifyOptions();
+                        break;
+                    case 'statistics':
+                        this.showSection('stats-section');
+                        this.updateCharts();
+                        break;
+                    case 'exit':
+                        this.showExitModal();
+                        break;
+                }
+            }
+
+            // 显示导入模态框
+            showImportModal() {
+                const modal = new bootstrap.Modal(document.getElementById('importModal'));
+                modal.show();
+            }
+
+            // 预览导入数据
+            previewImportData(file) {
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    const lines = content.split('\n').filter(line => line.trim());
+                    const preview = document.getElementById('previewTableBody');
+                    preview.innerHTML = '';
+
+                    // 显示前5条记录
+                    for (let i = 0; i < Math.min(5, lines.length); i++) {
+                        const fields = lines[i].split(' ');
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${fields[0] || ''}</td>
+                            <td>${fields[1] || ''}</td>
+                            <td>${fields[2] || ''}</td>
+                            <td>${fields[7] || ''}</td>
+                            <td>${fields[9] || ''}</td>
+                        `;
+                        preview.appendChild(row);
+                    }
+
+                    document.getElementById('importPreview').classList.remove('hidden');
+                };
+                reader.readAsText(file);
+            }
+
+            // 导入数据
+            importData() {
+                const fileInput = document.getElementById('fileInput');
+                const overwrite = document.getElementById('overwriteData').checked;
+
+                if (!fileInput.files[0]) {
+                    alert('请选择要导入的文件');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    const lines = content.split('\n').filter(line => line.trim());
+                    let importedCount = 0;
+
+                    if (overwrite) {
+                        this.graduates = [];
+                    }
+
+                    lines.forEach(line => {
+                        const fields = line.split(' ');
+                        if (fields.length >= 13) {
+                            const graduate = new Graduate(
+                                fields[0], fields[1], fields[2],
+                                `${fields[3]}-${fields[4]}-${fields[5]}`,
+                                parseInt(fields[6]), parseInt(fields[7]),
+                                fields[8], fields[9], fields[10], fields[11], fields[12]
+                            );
+
+                            // 检查学号是否已存在
+                            if (!this.graduates.find(g => g.studentId === graduate.studentId)) {
+                                this.graduates.push(graduate);
+                                importedCount++;
+                            }
+                        }
+                    });
+
+                    this.saveData();
+                    this.updateHomeStats();
+                    this.renderGraduatesTable();
+                    this.updateCharts();
+
+                    alert(`成功导入 ${importedCount} 条记录`);
+                    bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+                };
+                reader.readAsText(fileInput.files[0]);
+            }
+
+            // 显示搜索模态框
+            showSearchModal() {
+                const modal = new bootstrap.Modal(document.getElementById('searchModal'));
+                modal.show();
+            }
+
+            // 执行搜索
+            performSearch() {
+                const searchType = document.querySelector('input[name="searchType"]:checked').value;
+                const searchValue = document.getElementById('searchValue').value.trim();
+                const results = document.getElementById('searchResults');
+                const resultContent = document.getElementById('resultContent');
+
+                if (!searchValue) {
+                    alert('请输入查询值');
+                    return;
+                }
+
+                let foundGraduates = [];
+                if (searchType === 'id') {
+                    foundGraduates = this.graduates.filter(g => g.studentId === searchValue);
+                } else {
+                    foundGraduates = this.graduates.filter(g => g.name === searchValue);
+                }
+
+                resultContent.innerHTML = '';
+
+                if (foundGraduates.length === 0) {
+                    resultContent.innerHTML = '<p class="text-muted">未找到符合条件的毕业生信息</p>';
+                } else {
+                    foundGraduates.forEach(graduate => {
+                        const graduateCard = this.createGraduateCard(graduate);
+                        resultContent.appendChild(graduateCard);
+                    });
+                }
+
+                results.classList.remove('hidden');
+            }
+
+            // 创建毕业生信息卡片
+            createGraduateCard(graduate) {
+                const card = document.createElement('div');
+                card.className = 'card mb-3';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h6>${graduate.name} (${graduate.studentId})</h6>
+                        <p><strong>性别:</strong> ${graduate.gender} | <strong>毕业年份:</strong> ${graduate.graduationYear}</p>
+                        <p><strong>专业:</strong> ${graduate.major} | <strong>就业方向:</strong> ${graduate.careerDirection}</p>
+                        <p><strong>就业单位:</strong> ${graduate.employer || '无'}</p>
+                    </div>
+                `;
+                return card;
+            }
+
+            // 显示毕业生模态框（添加/编辑）
+            showGraduateModal(graduate = null) {
+                const modal = new bootstrap.Modal(document.getElementById('graduateModal'));
+                const title = document.getElementById('graduateModalTitle');
+                const form = document.getElementById('graduateForm');
+
+                if (graduate) {
+                    title.textContent = '编辑毕业生信息';
+                    this.currentEditId = graduate.studentId;
+                    this.populateForm(graduate);
+                } else {
+                    title.textContent = '添加毕业生信息';
+                    this.currentEditId = null;
+                    form.reset();
+                }
+
+                modal.show();
+            }
+
+            // 填充表单数据
+            populateForm(graduate) {
+                document.getElementById('studentId').value = graduate.studentId;
+                document.getElementById('name').value = graduate.name;
+                document.querySelector(`input[name="gender"][value="${graduate.gender}"]`).checked = true;
+                document.getElementById('birthDate').value = graduate.birthDate;
+                document.getElementById('enrollmentYear').value = graduate.enrollmentYear;
+                document.getElementById('graduationYear').value = graduate.graduationYear;
+                document.getElementById('educationLevel').value = Object.keys(EducationLevel).find(key => EducationLevel[key] === graduate.educationLevel);
+                document.getElementById('major').value = Object.keys(Major).find(key => Major[key] === graduate.major);
+                document.getElementById('careerDirection').value = Object.keys(CareerDirection).find(key => CareerDirection[key] === graduate.careerDirection);
+                document.getElementById('employer').value = graduate.employer || '';
+                document.getElementById('jobMajor').value = graduate.jobMajor || '';
+            }
+
+            // 保存毕业生信息
+            saveGraduate() {
+                const form = document.getElementById('graduateForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const graduate = new Graduate(
+                    document.getElementById('studentId').value,
+                    document.getElementById('name').value,
+                    document.querySelector('input[name="gender"]:checked').value,
+                    document.getElementById('birthDate').value,
+                    parseInt(document.getElementById('enrollmentYear').value),
+                    parseInt(document.getElementById('graduationYear').value),
+                    EducationLevel[document.getElementById('educationLevel').value],
+                    Major[document.getElementById('major').value],
+                    CareerDirection[document.getElementById('careerDirection').value],
+                    document.getElementById('employer').value,
+                    document.getElementById('jobMajor').value
+                );
+
+                // 验证学号
+                if (!this.validateStudentId(graduate.studentId)) {
+                    alert('学号格式错误！请输入9位数字学号，且不能全为0');
+                    return;
+                }
+
+                if (this.currentEditId) {
+                    // 编辑现有记录
+                    const index = this.graduates.findIndex(g => g.studentId === this.currentEditId);
+                    if (index !== -1) {
+                        this.graduates[index] = graduate;
+                    }
+                } else {
+                    // 检查学号是否已存在
+                    if (this.graduates.find(g => g.studentId === graduate.studentId)) {
+                        alert('该学号已存在！');
+                        return;
+                    }
+                    this.graduates.push(graduate);
+                }
+
+                this.saveData();
+                this.updateHomeStats();
+                this.renderGraduatesTable();
+                this.updateCharts();
+
+                bootstrap.Modal.getInstance(document.getElementById('graduateModal')).hide();
+                alert('毕业生信息保存成功！');
+            }
+
+            // 验证学号
+            validateStudentId(studentId) {
+                if (studentId.length !== 9) return false;
+                if (!/^\d+$/.test(studentId)) return false;
+                if (studentId === '000000000') return false;
+                return true;
+            }
+
+            // 渲染毕业生表格
+            renderGraduatesTable() {
+                const tbody = document.getElementById('graduates-table-body');
+                tbody.innerHTML = '';
+
+                this.graduates.forEach(graduate => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${graduate.studentId}</td>
+                        <td>${graduate.name}</td>
+                        <td>${graduate.gender}</td>
+                        <td>${graduate.birthDate}</td>
+                        <td>${graduate.enrollmentYear}</td>
+                        <td>${graduate.graduationYear}</td>
+                        <td>${graduate.educationLevel}</td>
+                        <td>${graduate.major}</td>
+                        <td>${graduate.careerDirection}</td>
+                        <td>${graduate.employer || '无'}</td>
+                        <td>${graduate.jobMajor || '无'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-1 edit-btn" data-id="${graduate.studentId}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${graduate.studentId}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                document.getElementById('record-count').textContent = this.graduates.length;
+
+                // 绑定编辑和删除按钮事件
+                tbody.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const studentId = e.target.closest('button').getAttribute('data-id');
+                        const graduate = this.graduates.find(g => g.studentId === studentId);
+                        this.showGraduateModal(graduate);
+                    });
+                });
+
+                tbody.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const studentId = e.target.closest('button').getAttribute('data-id');
+                        this.showDeleteConfirm(studentId);
+                    });
+                });
+            }
+
+            // 显示删除确认
+            showDeleteConfirm(studentId) {
+                const graduate = this.graduates.find(g => g.studentId === studentId);
+                const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                const infoDiv = document.getElementById('deleteGraduateInfo');
+
+                infoDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <strong>学号:</strong> ${graduate.studentId}<br>
+                        <strong>姓名:</strong> ${graduate.name}<br>
+                        <strong>专业:</strong> ${graduate.major}<br>
+                        <strong>就业方向:</strong> ${graduate.careerDirection}
+                    </div>
+                `;
+
+                modal.show();
+
+                // 存储当前要删除的学号
+                this.currentDeleteId = studentId;
+            }
+
+            // 确认删除
+            confirmDelete() {
+                if (this.currentDeleteId) {
+                    this.graduates = this.graduates.filter(g => g.studentId !== this.currentDeleteId);
+                    this.saveData();
+                    this.updateHomeStats();
+                    this.renderGraduatesTable();
+                    this.updateCharts();
+
+                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    alert('毕业生信息删除成功！');
+                }
+            }
+
+            // 显示删除选项
+            showDeleteOptions() {
+                const searchValue = prompt('请输入要删除的毕业生学号或姓名：');
+                if (!searchValue) return;
+
+                let foundGraduates = [];
+                if (/^\d+$/.test(searchValue)) {
+                    foundGraduates = this.graduates.filter(g => g.studentId === searchValue);
+                } else {
+                    foundGraduates = this.graduates.filter(g => g.name === searchValue);
+                }
+
+                if (foundGraduates.length === 0) {
+                    alert('未找到符合条件的毕业生信息');
+                } else if (foundGraduates.length === 1) {
+                    this.showDeleteConfirm(foundGraduates[0].studentId);
+                } else {
+                    let message = '找到多个匹配的毕业生，请选择：\n';
+                    foundGraduates.forEach((g, index) => {
+                        message += `${index + 1}. ${g.name} (${g.studentId}) - ${g.major}\n`;
+                    });
+                    
+                    const choice = prompt(message + '请输入序号：');
+                    const index = parseInt(choice) - 1;
+                    
+                    if (index >= 0 && index < foundGraduates.length) {
+                        this.showDeleteConfirm(foundGraduates[index].studentId);
+                    }
+                }
+            }
+
+            // 显示修改选项
+            showModifyOptions() {
+                const searchValue = prompt('请输入要修改的毕业生学号：');
+                if (!searchValue) return;
+
+                const graduate = this.graduates.find(g => g.studentId === searchValue);
+                if (graduate) {
+                    this.showGraduateModal(graduate);
+                } else {
+                    alert('未找到该学号的毕业生信息');
+                }
+            }
+
+            // 更新首页统计
+            updateHomeStats() {
+                document.getElementById('total-count').textContent = this.graduates.length;
+            }
+
+            // 更新图表
+            updateCharts() {
+                this.updateMajorChart();
+                this.updateDirectionChart();
+                this.updateStatsCards();
+            }
+
+            // 更新专业图表
+            updateMajorChart() {
+                const ctx = document.getElementById('major-chart').getContext('2d');
+                
+                // 按专业统计
+                const majorStats = {};
+                Object.values(Major).forEach(major => {
+                    majorStats[major] = this.graduates.filter(g => g.major === major).length;
+                });
+
+                // 如果已存在图表，先销毁
+                if (this.majorChart) {
+                    this.majorChart.destroy();
+                }
+
+                this.majorChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(majorStats),
+                        datasets: [{
+                            label: '毕业生数量',
+                            data: Object.values(majorStats),
+                            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: '各专业毕业生分布'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 更新就业方向图表
+            updateDirectionChart() {
+                const ctx = document.getElementById('direction-chart').getContext('2d');
+                
+                // 按就业方向统计
+                const directionStats = {};
+                Object.values(CareerDirection).forEach(direction => {
+                    directionStats[direction] = this.graduates.filter(g => g.careerDirection === direction).length;
+                });
+
+                // 如果已存在图表，先销毁
+                if (this.directionChart) {
+                    this.directionChart.destroy();
+                }
+
+                this.directionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(directionStats),
+                        datasets: [{
+                            data: Object.values(directionStats),
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
+                                '#4BC0C0', '#FF6384'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                            },
+                            title: {
+                                display: true,
+                                text: '就业方向分布'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 更新统计卡片
+            updateStatsCards() {
+                const total = this.graduates.length;
+                const employed = this.graduates.filter(g => 
+                    g.careerDirection !== 'UNEMPLOYED' && 
+                    g.careerDirection !== 'RETAKE_EXAM'
+                ).length;
+                const postgrad = this.graduates.filter(g => 
+                    [CareerDirection.DOMESTIC_MASTER, CareerDirection.OVERSEAS_MASTER, 
+                     CareerDirection.DOMESTIC_DOCTOR, CareerDirection.OVERSEAS_DOCTOR].includes(g.careerDirection)
+                ).length;
+                const working = this.graduates.filter(g => 
+                    [CareerDirection.DIRECT_WORK, CareerDirection.CIVIL_SERVANT].includes(g.careerDirection)
+                ).length;
+
+                document.getElementById('total-graduates').textContent = total;
+                document.getElementById('employment-rate').textContent = total > 0 ? ((employed / total) * 100).toFixed(1) + '%' : '0%';
+                document.getElementById('postgrad-rate').textContent = total > 0 ? ((postgrad / total) * 100).toFixed(1) + '%' : '0%';
+                document.getElementById('work-rate').textContent = total > 0 ? ((working / total) * 100).toFixed(1) + '%' : '0%';
+            }
+
+            // 显示统计详情
+            showStatDetail(statType) {
+                const modal = new bootstrap.Modal(document.getElementById('statDetailModal'));
+                const title = document.getElementById('statDetailTitle');
+                const content = document.getElementById('statDetailContent');
+
+                let year = prompt('请输入要统计的年份：');
+                if (!year) return;
+
+                year = parseInt(year);
+                const yearGraduates = this.graduates.filter(g => g.graduationYear === year);
+
+                if (yearGraduates.length === 0) {
+                    content.innerHTML = `<p class="text-muted">未找到${year}年的毕业生数据</p>`;
+                    modal.show();
+                    return;
+                }
+
+                let html = `<h6>${year}年统计结果</h6>`;
+                
+                switch (statType) {
+                    case 'year':
+                        const employed = yearGraduates.filter(g => 
+                            g.careerDirection !== 'UNEMPLOYED' && 
+                            g.careerDirection !== 'RETAKE_EXAM'
+                        ).length;
+                        const rate = (employed / yearGraduates.length * 100).toFixed(2);
+                        html += `<p>毕业生总数: ${yearGraduates.length}</p>`;
+                        html += `<p>就业人数: ${employed}</p>`;
+                        html += `<p>就业率: ${rate}%</p>`;
+                        break;
+                    
+                    case 'year-edu':
+                        html += this.generateEduStats(yearGraduates);
+                        break;
+                    
+                    case 'year-major':
+                        html += this.generateMajorStats(yearGraduates);
+                        break;
+                    
+                    case 'year-direction':
+                        html += this.generateDirectionStats(yearGraduates);
+                        break;
+                    
+                    case 'year-job-major':
+                        html += this.generateJobMajorStats(yearGraduates);
+                        break;
+                }
+
+                content.innerHTML = html;
+                title.textContent = `统计详情 - ${year}年`;
+                modal.show();
+            }
+
+            // 生成学历统计
+            generateEduStats(graduates) {
+                let html = '<table class="table table-bordered"><thead><tr><th>学历层次</th><th>毕业生人数</th><th>就业人数</th><th>就业率</th></tr></thead><tbody>';
+                
+                const eduStats = {
+                    '本科生': { total: 0, employed: 0 },
+                    '硕士研究生': { total: 0, employed: 0 },
+                    '博士研究生': { total: 0, employed: 0 }
+                };
+                
+                graduates.forEach(g => {
+                    const eduLevel = g.educationLevel;
+                    if (eduStats[eduLevel]) {
+                        eduStats[eduLevel].total++;
+                        if (g.careerDirection !== 'RETAKE_EXAM' && 
+                            g.careerDirection !== 'UNEMPLOYED' && 
+                            g.careerDirection !== 'OTHER') {
+                            eduStats[eduLevel].employed++;
+                        }
+                    }
+                });
+                
+                Object.entries(eduStats).forEach(([level, stats]) => {
+                    if (stats.total > 0) {
+                        const rate = (stats.employed / stats.total * 100).toFixed(2);
+                        html += `<tr><td>${level}</td><td>${stats.total}</td><td>${stats.employed}</td><td>${rate}%</td></tr>`;
+                    }
+                });
+                
+                html += '</tbody></table>';
+                return html;
+            }
+
+            // 生成专业统计
+            generateMajorStats(graduates) {
+                let html = '<table class="table table-bordered"><thead><tr><th>专业名称</th><th>毕业生人数</th><th>就业人数</th><th>就业率</th></tr></thead><tbody>';
+                
+                const majorStats = {};
+                Object.values(Major).forEach(major => {
+                    majorStats[major] = { total: 0, employed: 0 };
+                });
+                
+                graduates.forEach(g => {
+                    if (majorStats[g.major]) {
+                        majorStats[g.major].total++;
+                        if (g.careerDirection !== 'RETAKE_EXAM' && 
+                            g.careerDirection !== 'UNEMPLOYED' && 
+                            g.careerDirection !== 'OTHER') {
+                            majorStats[g.major].employed++;
+                        }
+                    }
+                });
+                
+                Object.entries(majorStats).forEach(([major, stats]) => {
+                    if (stats.total > 0) {
+                        const rate = (stats.employed / stats.total * 100).toFixed(2);
+                        html += `<tr><td>${major}</td><td>${stats.total}</td><td>${stats.employed}</td><td>${rate}%</td></tr>`;
+                    }
+                });
+                
+                html += '</tbody></table>';
+                return html;
+            }
+
+            // 生成就业方向统计
+            generateDirectionStats(graduates) {
+                let html = '<table class="table table-bordered"><thead><tr><th>就业方向</th><th>人数</th><th>比例</th></tr></thead><tbody>';
+                
+                const directionStats = {};
+                Object.values(CareerDirection).forEach(direction => {
+                    directionStats[direction] = 0;
+                });
+                
+                graduates.forEach(g => {
+                    if (directionStats[g.careerDirection] !== undefined) {
+                        directionStats[g.careerDirection]++;
+                    }
+                });
+                
+                const total = graduates.length;
+                Object.entries(directionStats).forEach(([direction, count]) => {
+                    if (count > 0) {
+                        const proportion = (count / total * 100).toFixed(2);
+                        html += `<tr><td>${direction}</td><td>${count}</td><td>${proportion}%</td></tr>`;
+                    }
+                });
+                
+                html += '</tbody></table>';
+                return html;
+            }
+
+            // 生成从事专业统计
+            generateJobMajorStats(graduates) {
+                let html = '<table class="table table-bordered"><thead><tr><th>从事专业</th><th>人数</th><th>比例</th></tr></thead><tbody>';
+                
+                const jobMajorStats = {};
+                graduates.forEach(g => {
+                    if (g.jobMajor && g.jobMajor.trim() !== '') {
+                        const jobMajor = g.jobMajor.trim();
+                        jobMajorStats[jobMajor] = (jobMajorStats[jobMajor] || 0) + 1;
+                    }
+                });
+                
+                const total = graduates.length;
+                Object.entries(jobMajorStats).forEach(([jobMajor, count]) => {
+                    const proportion = (count / total * 100).toFixed(2);
+                    html += `<tr><td>${jobMajor}</td><td>${count}</td><td>${proportion}%</td></tr>`;
+                });
+                
+                html += '</tbody></table>';
+                return html;
+            }
+
+            // 加载数据
+            loadData() {
+                const savedData = localStorage.getItem('graduatesData');
+                if (savedData) {
+                    try {
+                        const parsedData = JSON.parse(savedData);
+                        // 将普通对象转换为Graduate实例
+                        return parsedData.map(item => new Graduate(
+                            item.studentId, item.name, item.gender, item.birthDate,
+                            item.enrollmentYear, item.graduationYear, item.educationLevel,
+                            item.major, item.careerDirection, item.employer, item.jobMajor
+                        ));
+                    } catch (e) {
+                        console.error('数据加载失败:', e);
+                        return this.getSampleData();
+                    }
+                }
+                return this.getSampleData();
+            }
+
+            // 获取示例数据
+            getSampleData() {
+                return [
+                    new Graduate('180201001', '张明', 'M', '1999-05-15', 2018, 2022, 
+                                '本科生', '网络工程', '直接工作', '华为技术有限公司', '网络工程'),
+                    new Graduate('190201002', '李娜', 'F', '2000-08-22', 2019, 2023,
+                                '本科生', '网络工程', '国内读硕', '北京邮电大学', '网络安全'),
+                    new Graduate('170201003', '王刚', 'M', '1998-03-10', 2017, 2021,
+                                '本科生', '网络工程', '出国读硕', '斯坦福大学', '人工智能'),
+                    new Graduate('180202001', '刘洋', 'M', '1999-07-20', 2018, 2022,
+                                '本科生', '计算机科学与技术', '直接工作', '字节跳动', '后端开发'),
+                    new Graduate('190202002', '赵雪', 'F', '2000-01-30', 2019, 2023,
+                                '本科生', '计算机科学与技术', '国内读博', '清华大学', '机器学习'),
+                    new Graduate('180203001', '吴昊', 'M', '1999-04-18', 2018, 2022,
+                                '本科生', '数字媒体技术', '二战', '无', '无'),
+                    new Graduate('190203002', '郑梅', 'F', '2000-06-25', 2019, 2023,
+                                '本科生', '数字媒体技术', '二学位', '北京大学', '数字艺术'),
+                    new Graduate('180204001', '朱强', 'M', '1999-10-03', 2018, 2022,
+                                '本科生', '物联网工程', '未就业', '无', '无'),
+                    new Graduate('190204002', '秦雨', 'F', '2000-07-19', 2019, 2023,
+                                '本科生', '物联网工程', '国内读硕', '西安电子科技大学', '物联网安全'),
+                    new Graduate('180205001', '韩雪', 'F', '1999-08-09', 2018, 2022,
+                                '本科生', '数据科学与大数据技术', '直接工作', '蚂蚁集团', '数据分析')
+                ];
+            }
+
+            // 保存数据
+            saveData() {
+                try {
+                    localStorage.setItem('graduatesData', JSON.stringify(this.graduates));
+                } catch (e) {
+                    console.error('数据保存失败:', e);
+                    alert('数据保存失败，请检查浏览器存储空间');
+                }
+            }
+
+            // 显示退出确认
+            showExitModal() {
+                const modal = new bootstrap.Modal(document.getElementById('exitModal'));
+                modal.show();
+            }
+
+            // 确认退出
+            confirmExit() {
+                if (confirm('确定要退出系统吗？')) {
+                    alert('感谢使用信息学院毕业生就业去向管理系统！');
+                }
+            }
+        }
+
+        // 页面加载完成后初始化系统
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建系统实例
+            window.graduateSystem = new GraduateManagementSystem();
+            
+            console.log('毕业生就业去向管理系统已加载完成');
+        });
+    </script>
+</body>
+</html>
